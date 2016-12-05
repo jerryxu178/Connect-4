@@ -24,15 +24,27 @@ class Connect4Cells(object):
             k -= 1
         return k
     def clickAt(self, columnIndex, player):
-        self.checkWin()
+        self.checkWin() # CURRENTLY CHECK FOR WINS HERE 
         row = self.getFirstEmptyCell(columnIndex)
+        if self.checkWin():
+            return 123
         if row < 0:
             return False
         self._cells[row][columnIndex] = player
         return True
     def getCellNumber(self,rowIndex,columnIndex):
         return self._cells[rowIndex][columnIndex]
-    def checkWin(self, rowIndex,columnIndex,player):
+
+    def checkWin(self):
+        #print self._cells
+        if self._cells[5][1] != 0:
+            print "winner"
+            return True
+
+
+
+
+    def checkWin_OLD(self, rowIndex,columnIndex,player):
         for i in range(self.columns):
             for j in range(self.rows):
                 if self._cells[i][j] == self._cells[i+j] == self._cells[i+3][j] == self._cells[i][j+3] == player:

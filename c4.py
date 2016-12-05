@@ -23,18 +23,35 @@ class Connect4Frame(object):
                 btn.grid(row=i,column=j)
                 self.buttons[i].append(btn)
         self.colorButtons()
+    def makeMove(self, x, y):
+        self.buttons[x][y].configure(bg=Connect4Frame.COLORS[1])
+
+    def AI(self):
+        #print self.cells._cells
+        #self.makeMove(5, 1)
+        pass
+        
     def clicked(self, rowIndex, columnIndex):
         self.atRow = rowIndex
         self.atColumn = columnIndex
         result = self.cells.clickAt(self.atColumn,self.player)
+        # set result == False to stop alternating players on click
         if result:
             self.player = 3 - self.player
         self.colorButtons()
+        # call AI here
+        self.AI()
+
+
+
+
     def colorButtons(self):
         for i in range(self.rows):
             for j in range(self.columns):
                 self.buttons[i][j].configure(bg=Connect4Frame.COLORS[self.cells.getCellNumber(i,j)])
     def mainloop(self):
         self.root.mainloop()
+
+
 w = Connect4Frame()
 w.mainloop()
