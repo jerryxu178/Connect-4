@@ -8,21 +8,48 @@ class Connect4Cells(object):
             self._cells.append([])
             for j in range(columns):
                 self._cells[i].append(0)
+
+    def _makeMove(self, column, cellstate, player):
+        """
+        R
+        :param column:
+        :param cellstate:
+        :param player:
+        :return: a tuple of (won, valid), where won represents if this move won the game, and valid represents if the move is valid!
+        """
+        if self._checkColumn(self, column, cellstate):
+            row = self._getFirstEmptyCell(column, cellstate)
+            cellstate[column][row] = player
+            won = self._isWin(row, column, cellstate)
+            return (won, cellstate)
+        return (False, False)
+
     def checkRow(self, rowIndex):
+        self._checkRow(rowIndex, self._cells)
+
+    def _checkRow(self, rowIndex, cellstate):
         for j in range(self.columns):
-            if self._cells[rowIndex][j] == 0:
+            if cellstate[rowIndex][j] == 0:
                 return True
         return False
+
     def checkColumn(self, columnIndex):
+        self._checkColumn(columnIndex, self._cells)
+
+    def _checkColumn(self, columnIndex, cellstate):
         for i in range(self.rows):
-            if self._cells[i][columnIndex] == 0:
+            if cellstate[i][columnIndex] == 0:
                 return True
         return False
     def getFirstEmptyCell(self, columnIndex):
+        self._getFirstEmptyCell(columnIndex, self._cells)
+
+    def _getFirstEmptyCell(self, columnIndex, cellstate):
         k = self._rowCounts - 1
-        while self._cells[k][columnIndex] != 0:
+        while cellstate[k][columnIndex] != 0:
             k -= 1
         return k
+
     def clickAt(self, columnIndex, player):
         self.checkWin()
         row = self.getFirstEmptyCell(columnIndex)
@@ -32,6 +59,7 @@ class Connect4Cells(object):
         return True
     def getCellNumber(self,rowIndex,columnIndex):
         return self._cells[rowIndex][columnIndex]
+
     def checkWin(self, rowIndex,columnIndex,player):
         for i in range(self.columns):
             for j in range(self.rows):
