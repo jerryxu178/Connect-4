@@ -1,5 +1,6 @@
 from connect4cell2 import Connect4Cells
 from Tkinter import *
+import time
 
 class Connect4Frame(object):
 
@@ -26,26 +27,36 @@ class Connect4Frame(object):
                 btn.grid(row=i,column=j)
                 self.buttons[i].append(btn)
         self.colorButtons()
+        self.AI()
     def makeMove(self, x, y):
         self.buttons[x][y].configure(bg=Connect4Frame.COLORS[1])
 
     def AI(self):
         #print self.cells._cells
         #self.makeMove(5, 1)
-        pass
+        self.player = 2
+        move_col = (self.cells.ai.getMove(self.cells._cells, self.player))
+        #self.makeMove(5, move_col)
+        self.cells.clickAt(move_col, self.player)
+        #print(self.cells._cells)
+        self.cells._cells[5][move_col] = 2
+        #print(self.cells._cells)
+        self.player = 1
         
     def clicked(self, rowIndex, columnIndex):
         self.atRow = rowIndex
         self.atColumn = columnIndex
         result = self.cells.clickAt(self.atColumn,self.player)
         #set result == False to stop alternating players on click
-        if result:
-           self.player = 3 - self.player
-        else:
-            print "invalid move"
+        #if result:
+        #   self.player = 3 - self.player
+        #else:
+        #    print "invalid move"
+        self.player = 1
         self.colorButtons()
         # call AI here
-        print(self.cells.ai.getMove(self.cells._cells, self.player))
+        self.root.after(0, self.AI())
+        #print(self.cells.ai.getMove(self.cells._cells, self.player))
 
     def colorButtons(self):
         for i in range(self.rows):

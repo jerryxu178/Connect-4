@@ -170,7 +170,7 @@ class Connect4Cells(object):
         if row < 0:
            return False
 
-        print("Clicked column c" + str(columnIndex) + " and adding to row " + str(row) + " for player " + str(player))
+        #print("Clicked column c" + str(columnIndex) + " and adding to row " + str(row) + " for player " + str(player))
         self._cells[row][columnIndex] = player
         self.checkWin(player)  # CURRENTLY CHECK FOR WINS HERE
         return True
@@ -179,9 +179,8 @@ class Connect4Cells(object):
         return self._cells[rowIndex][columnIndex]
 
     def checkWin(self, player):
-        print("here")
         counts = self._getConsecutiveCounts(player, self._cells)
-        print(counts)
+        #print(counts)
         if counts[4] > 0:
             print("Player WON!")
             return True
