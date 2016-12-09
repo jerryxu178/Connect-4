@@ -2,21 +2,25 @@ import numpy as np
 
 class opponent(object):
 
-    def __init__(self, cellsobject, heuristic=None):
+    def __init__(self, game, heuristic=None):
         """
 
         :param cellstate: an instance of
         :param heuristic: a lambda function on cellstate and player (0 or 1) that returns some given heuristic for theat player
         """
-        self._game = cellsobject
-        self._cells = cellsobject._cells
+        self._game = game
         self._heuristic = self.defaultheuristic
 
 
-    def defaultheuristic(self, cellstate, player):
+    def defaultheuristic(self, player, cellstate):
 
-        # TODO
-        return 0.999
+        # TODO build this out
+        counts = self._game._getConsecutiveCounts(player, cellstate)
+        #print(counts)
+        if counts[4] > 0:
+            return float('inf')
+        else:
+            return counts[3] + counts[2]
 
     def getMove(self, cellstate, player):
         '''
@@ -28,23 +32,27 @@ class opponent(object):
         :return: the next move!
         '''
 
-        possibleMovedStates = [self._game._makeMove(c, cellstate, player) for c in range(self._game.columns)]
+        print("Computing minimax for player" + str(player))
+
+        possibleMovedStates = [self._game._testMove(c, np.copy(cellstate), player) for c in range(self._game._columnCounts)]
         outcomes = []
-        for (won, state) in possibleMovedStates:
-            if not won and not state:
+        for (won, state, invalid) in possibleMovedStates:
+            #print(state)
+            if invalid:
                 # If the move is invalid, what do we do?? lets make it infinitely bad
                 outcomes.append(-float('inf'))
-            elif won:
-                #in this case we want to guarantee it is picked, since we've def. won the game :)
-                outcomes.append(float('inf'))
+            # elif won:
+            #     #in this case we want to guarantee it is picked, since we've def. won the game :)
+            #     outcomes.append(float('inf'))
             else:
                 # Send this off to minimax if it's neither
-                outcomes.append(self.minmax(state, "min", player, 3))
+                outcomes.append(self.minmax(state, "min", player, 2, player))
 
+        print(outcomes)
         return np.argmax(outcomes)
 
 
-    def minmax(self, cellstate, type, player, depth):
+    def minmax(self, cellstate, type, player, depth, origplayer):
         """
         type is "min" or "max"
         :param cellstate:
@@ -54,21 +62,23 @@ class opponent(object):
 
         if depth == 0:
             # We've reached max depht
-            return self.defaultheuristic(cellstate, player)
+            return self.defaultheuristic(origplayer, cellstate)
 
-        possibleMovedStates = [self._game._makeMove(c, cellstate, player) for c in range(self._game.columns)]
+        possibleMovedStates = [self._game._testMove(c, np.copy(cellstate), player) for c in range(self._game._columnCounts)]
         outcomes = []
 
-        for (won, state) in possibleMovedStates:
-            if not won and not state:
+        for (won, state, invalid) in possibleMovedStates:
+
+            if invalid:
                 # If the move is invalid, what do we do?? lets make it infinitely bad
                 outcomes.append(-float('inf'))
-            elif won:
-                # in this case we want to guarantee it is picked, since we've def. won the game :)
-                outcomes.append(float('inf'))
+            # elif won:
+            #     print("oops")
+            #     # in this case we want to guarantee it is picked, since we've def. won the game :)
+            #     outcomes.append(float('inf'))
             else:
                 # Send this off to minimax if it's neither
-                outcomes.append(self.minmax(state, ("max" if type == "min" else "min")))
+                outcomes.append(self.minmax(state, ("max" if type == "min" else "min"), 3 - player, depth - 1, origplayer))
 
         if type == "max":
             return max(outcomes)
