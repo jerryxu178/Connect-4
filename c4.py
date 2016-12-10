@@ -39,7 +39,7 @@ class Connect4Frame(object):
         #self.makeMove(5, move_col)
         self.cells.clickAt(move_col, self.player)
         #print(self.cells._cells)
-        self.cells._cells[5][move_col] = 2
+        #self.cells._cells[5][move_col] = 2
         #print(self.cells._cells)
         self.player = 1
         
@@ -55,7 +55,8 @@ class Connect4Frame(object):
         self.player = 1
         self.colorButtons()
         # call AI here
-        self.root.after(0, self.AI())
+        #self.root.after(0, self.AI())
+        self.AI()
         #print(self.cells.ai.getMove(self.cells._cells, self.player))
 
     def colorButtons(self):

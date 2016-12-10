@@ -179,6 +179,7 @@ class Connect4Cells(object):
         return self._cells[rowIndex][columnIndex]
 
     def checkWin(self, player):
+        #print("here")
         counts = self._getConsecutiveCounts(player, self._cells)
         #print(counts)
         if counts[4] > 0:
