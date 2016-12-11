@@ -195,7 +195,7 @@ class C4Model(object):
 
     def checkWin(self, player):
         counts = self._getConsecutiveCounts(player, self._cells)
-        print(counts)
+        #print(counts)
         if counts[4] > 0:
             print("Player " + str(player) + " WON!")
             return True

@@ -1,5 +1,6 @@
 from C4Model import C4Model
 from Tkinter import *
+import time
 
 class C4View(object):
 
