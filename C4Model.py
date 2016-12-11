@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import opponent
 
-class Connect4Cells(object):
+class C4Model(object):
     def __init__(self, rows = 6, columns=7, numcolors = 3):
         self._rowCounts = rows
         self._numColors = numcolors
@@ -34,8 +34,8 @@ class Connect4Cells(object):
         if self._checkColumn(column, cellstate):
             row = self._getFirstEmptyCell(column, cellstate)
             cellstate[row][column] = player
-            won = self._isWin(row, column, player, cellstate)
-            return (won, cellstate, False)
+            #won = self._isWin(row, column, player, cellstate)
+            return (False, cellstate, False)
         return (False, cellstate, True)
 
     def _isWin(self, row, column, player, cellstate):
@@ -75,7 +75,7 @@ class Connect4Cells(object):
         return False
 
     def _getConsecutiveCounts(self, player, cellstate):
-        allcounts = [0] * self._rowCounts
+        allcounts = [0] * self._columnCounts
 
         for i in range(self._rowCounts):
             count = 0
@@ -164,24 +164,38 @@ class Connect4Cells(object):
 
     def clickAt(self, columnIndex, player):
 
-
         row = self.getFirstEmptyCell(columnIndex)
 
         if row < 0:
-           return False
+           return (False, None)
 
         print("Clicked column c" + str(columnIndex) + " and adding to row " + str(row) + " for player " + str(player))
+
         self._cells[row][columnIndex] = player
-        self.checkWin(player)  # CURRENTLY CHECK FOR WINS HERE
-        return True
+        if self.checkWin(player):  # CURRENTLY CHECK FOR WINS HERE
+            return (True, True)
+
+        AIMove = self.ai.getMove(self._cells, 3 - player)
+
+        rowAI = self.getFirstEmptyCell(AIMove)
+
+        if rowAI < 0:
+            return (False, True)
+
+        print("AI Clicked column c" + str(AIMove) + " and adding to row " + str(rowAI) + " for player " + str(3 - player))
+
+        self._cells[rowAI][AIMove] = 3 - player
+        if self.checkWin(3 - player):  # CURRENTLY CHECK FOR WINS HERE
+            return (True, False)
+
+        return (True, None)
 
     def getCellNumber(self,rowIndex,columnIndex):
         return self._cells[rowIndex][columnIndex]
 
     def checkWin(self, player):
-        print("here")
         counts = self._getConsecutiveCounts(player, self._cells)
         print(counts)
         if counts[4] > 0:
-            print("Player WON!")
+            print("Player " + str(player) + " WON!")
             return True

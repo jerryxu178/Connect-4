@@ -15,16 +15,21 @@ class opponent(object):
     def defaultheuristic(self, player, cellstate):
 
         # TODO build this out
-        counts = self._game._getConsecutiveCounts(player, cellstate)
+        mycounts = self._game._getConsecutiveCounts(player, cellstate)
+        theircounts = self._game._getConsecutiveCounts(3 - player, cellstate)
         #print(counts)
-        if counts[4] > 0:
+        counts = list(np.array(mycounts) - np.array(theircounts))
+        if theircounts[4] > 0:
+            print("possible WIN for them :(")
+            return -float('inf')
+        if mycounts[4] > 0:
             return float('inf')
         else:
             return counts[3] + counts[2]
 
     def getMove(self, cellstate, player):
         '''
-        Does minimax up until $depth$, assuming you are player x.
+        Does minimax up until $depth$, assuming you are player "player".
 
         :param depth:
         :param cellstate:
@@ -46,7 +51,7 @@ class opponent(object):
             #     outcomes.append(float('inf'))
             else:
                 # Send this off to minimax if it's neither
-                outcomes.append(self.minmax(state, "min", player, 2, player))
+                outcomes.append(self.minmax(state, "min", 3 - player, 3, player))
 
         print(outcomes)
         return np.argmax(outcomes)
@@ -80,13 +85,10 @@ class opponent(object):
                 # Send this off to minimax if it's neither
                 outcomes.append(self.minmax(state, ("max" if type == "min" else "min"), 3 - player, depth - 1, origplayer))
 
+       # print("taking " + type + " of")
+        #print(outcomes)
         if type == "max":
             return max(outcomes)
         elif type == "min":
+            #print(outcomes)
             return min(outcomes)
-
-
-
-
-
-
