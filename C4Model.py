@@ -3,7 +3,7 @@ import numpy as np
 import opponent
 
 class C4Model(object):
-    def __init__(self, rows = 6, columns=7, numcolors = 3):
+    def __init__(self, view, rows = 6, columns=7, numcolors = 3):
         self._rowCounts = rows
         self._numColors = numcolors
         self._columnCounts = columns
@@ -14,6 +14,7 @@ class C4Model(object):
         #     for j in range(columns):
         #         self._cells[i].append(0)
         self.ai = opponent.opponent(self)
+        self.view = view
 
     def prettyprint(self):
         for i in range(self._rowCounts):
@@ -197,5 +198,6 @@ class C4Model(object):
         counts = self._getConsecutiveCounts(player, self._cells)
         #print(counts)
         if counts[4] > 0:
+            self.view.root.wm_title("GAME OVER                               Player " + str(player) + " WON!")
             print("Player " + str(player) + " WON!")
             return True
