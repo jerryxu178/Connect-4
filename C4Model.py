@@ -38,42 +38,6 @@ class C4Model(object):
             return (False, cellstate, False)
         return (False, cellstate, True)
 
-    def _isWin(self, row, column, player, cellstate):
-        # Check horizontal and vertical and diagonal up/down:
-        foundLineHorizontal = 0
-        foundLineVertical = 0
-        foundLineDiagonalDown = 0
-        foundLineDiagonalUp = 0
-        for i in range(-self._connects/2+1, self._connects/2+1):
-
-            if 0 <= row + i < self._rowCounts and cellstate[row+i][column] == player:
-                foundLineHorizontal += 1
-            else:
-                foundLineHorizontal = 0
-
-            if 0 <= column + i < self._columnCounts and cellstate[row][column + i] == player:
-                foundLineVertical += 1
-            else:
-                foundLineVertical = 0
-
-            if 0 <= column + i < self._columnCounts and 0 <= row + i < self._rowCounts and cellstate[row + i][column + i] == player:
-                foundLineDiagonalUp += 1
-            else:
-                foundLineDiagonalUp = 0
-
-            if 0 <= column + i < self._columnCounts and 0 <= row - i < self._rowCounts and cellstate[row - i][column + i] == player:
-                foundLineDiagonalDown += 1
-            else:
-                foundLineDiagonalDown = 0
-
-            if foundLineHorizontal == self._connects or foundLineVertical == self._connects or foundLineDiagonalDown == self._connects or foundLineDiagonalUp == self._connects:
-                return True
-
-        if foundLineHorizontal == self._connects or foundLineVertical == self._connects or foundLineDiagonalDown == self._connects or foundLineDiagonalUp == self._connects:
-            return True
-
-        return False
-
     def _getConsecutiveCounts(self, player, cellstate):
         allcounts = [0] * self._columnCounts
 
@@ -199,3 +163,41 @@ class C4Model(object):
         if counts[4] > 0:
             print("Player " + str(player) + " WON!")
             return True
+
+        # def _isWin(self, row, column, player, cellstate):
+        #     # Check horizontal and vertical and diagonal up/down:
+        #     foundLineHorizontal = 0
+        #     foundLineVertical = 0
+        #     foundLineDiagonalDown = 0
+        #     foundLineDiagonalUp = 0
+        #     for i in range(-self._connects / 2 + 1, self._connects / 2 + 1):
+        #
+        #         if 0 <= row + i < self._rowCounts and cellstate[row + i][column] == player:
+        #             foundLineHorizontal += 1
+        #         else:
+        #             foundLineHorizontal = 0
+        #
+        #         if 0 <= column + i < self._columnCounts and cellstate[row][column + i] == player:
+        #             foundLineVertical += 1
+        #         else:
+        #             foundLineVertical = 0
+        #
+        #         if 0 <= column + i < self._columnCounts and 0 <= row + i < self._rowCounts and cellstate[row + i][
+        #                     column + i] == player:
+        #             foundLineDiagonalUp += 1
+        #         else:
+        #             foundLineDiagonalUp = 0
+        #
+        #         if 0 <= column + i < self._columnCounts and 0 <= row - i < self._rowCounts and cellstate[row - i][
+        #                     column + i] == player:
+        #             foundLineDiagonalDown += 1
+        #         else:
+        #             foundLineDiagonalDown = 0
+        #
+        #         if foundLineHorizontal == self._connects or foundLineVertical == self._connects or foundLineDiagonalDown == self._connects or foundLineDiagonalUp == self._connects:
+        #             return True
+        #
+        #     if foundLineHorizontal == self._connects or foundLineVertical == self._connects or foundLineDiagonalDown == self._connects or foundLineDiagonalUp == self._connects:
+        #         return True
+        #
+        #     return False
