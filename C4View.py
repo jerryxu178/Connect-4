@@ -1,13 +1,12 @@
 from C4Model import C4Model
 from Tkinter import *
-import time
 
 class C4View(object):
 
     COLORS = ["White", "Red", "Yellow"]
 
     def __init__(self,rows = 6, columns = 7):
-        self.cells = C4Model(rows, columns, 3)
+        self.cells = C4Model(self, rows, columns, 3)
         self.rows = rows
         self.columns = columns
         self.atRow = 0
