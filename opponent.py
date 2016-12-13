@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 class opponent(object):
 
@@ -20,7 +21,6 @@ class opponent(object):
         #print(counts)
         counts = list(np.array(mycounts) - np.array(theircounts))
         if theircounts[4] > 0:
-            print("possible WIN for them :(")
             return -float('inf')
         if mycounts[4] > 0:
             return float('inf')
@@ -45,11 +45,17 @@ class opponent(object):
 
         for (moveIndex, (won, state, invalid)) in enumerate(possibleMovedStates):
             if not invalid:
-                outcomes.append(self.minmax(state, "min", 3 - player, 3, player, -float('inf'), float('inf')))
+                outcomes.append(self.minmax(state, "min", 3 - player, 4, player, -float('inf'), float('inf')))
                 moves.append(moveIndex)
 
         print(outcomes)
-        return np.argmax(outcomes)
+        bestMove = max(outcomes)
+        indices = [i for i, x in enumerate(outcomes) if x == bestMove]
+        if len(indices) > 1:
+            index = random.choice(indices)
+        else:
+            index = indices[0]
+        return index
 
 
     def minmax(self, cellstate, type, player, depth, origplayer, alpha=None, beta=None):
