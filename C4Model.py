@@ -40,22 +40,22 @@ class C4Model(object):
         return (False, cellstate, True)
 
     def _getConsecutiveCounts(self, player, cellstate):
-        allcounts = [0] * self._columnCounts
+        allcounts = [0] * (self._columnCounts + 1)
 
+        #Horizontal
         for i in range(self._rowCounts):
             count = 0
             for j in range(self._columnCounts):
                 if cellstate[i][j] == player:
                     count += 1
                 elif count != 0:
- #                   print("Found in rows a consecutive of length " + str(count) + " on row " + str(i))
                     allcounts[count] += 1
                     count = 0
             if count != 0:
-#                print("Found in rows a consecutive of length " + str(count) + " on row " + str(i))
                 allcounts[count] += 1
                 count = 0
 
+        #Vertical
         for i in range(self._columnCounts):
             count = 0
             for j in range(self._rowCounts):
@@ -68,6 +68,7 @@ class C4Model(object):
                 allcounts[count] += 1
                 count = 0
 
+        #Diagonal down right from left edge
         for i in range(self._rowCounts):
             count = 0
             j = 0
@@ -83,11 +84,44 @@ class C4Model(object):
                 allcounts[count] += 1
                 count = 0
 
-        for i in range(self._rowCounts):
+        #Diagonal down right from top edge
+        for i in range(1, self._columnCounts):
             count = 0
             j = 0
-            while i < self._rowCounts and j < self._columnCounts:
+            while i < self._columnCounts and j < self._rowCounts:
+                if cellstate[j][i] == player:
+                    count += 1
+                elif count != 0:
+                    allcounts[count] += 1
+                    count = 0
+                i += 1
+                j += 1
+            if count != 0:
+                allcounts[count] += 1
+                count = 0
+
+        # Diagonal down left from right edges
+        for i in range(self._rowCounts):
+            count = 0
+            j = self._columnCounts-1
+            while 0 <= i < self._rowCounts and 0 <= j < self._columnCounts:
                 if cellstate[i][j] == player:
+                    count += 1
+                elif count != 0:
+                    allcounts[count] += 1
+                    count = 0
+                i += 1
+                j -= 1
+            if count != 0:
+                allcounts[count] += 1
+                count = 0
+
+        # Diagonal down left from top
+        for i in range(0, self._columnCounts-1):
+            count = 0
+            j = 0
+            while 0 <= i < self._columnCounts and 0 <= j < self._rowCounts:
+                if cellstate[j][i] == player:
                     count += 1
                 elif count != 0:
                     allcounts[count] += 1
@@ -97,6 +131,7 @@ class C4Model(object):
             if count != 0:
                 allcounts[count] += 1
                 count = 0
+
 
         return allcounts
 
@@ -203,3 +238,19 @@ class C4Model(object):
         #         return True
         #
         #     return False
+
+# derp = C4Model(None)
+#
+# test = [[0, 0, 0, 1, 0, 0, 0],
+#
+#         [0, 0, 1, 0, 0, 0, 1],
+#
+#         [0, 1, 0, 1, 1, 0, 1],
+#
+#         [1, 0, 0, 1, 1, 0, 1],
+#
+#         [0, 0, 1, 0, 0, 1, 1],
+#
+#         [0, 1, 2, 2, 2, 2, 0]]
+#
+# print derp._getConsecutiveCounts(1, test)

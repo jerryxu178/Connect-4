@@ -41,23 +41,18 @@ class opponent(object):
 
         possibleMovedStates = [self._game._testMove(c, np.copy(cellstate), player) for c in range(self._game._columnCounts)]
         outcomes = []
-        for (won, state, invalid) in possibleMovedStates:
-            #print(state)
-            if invalid:
-                # If the move is invalid, what do we do?? lets make it infinitely bad
-                outcomes.append(-float('inf'))
-            # elif won:
-            #     #in this case we want to guarantee it is picked, since we've def. won the game :)
-            #     outcomes.append(float('inf'))
-            else:
-                # Send this off to minimax if it's neither
-                outcomes.append(self.minmax(state, "min", 3 - player, 3, player))
+        moves = []
+
+        for (moveIndex, (won, state, invalid)) in enumerate(possibleMovedStates):
+            if not invalid:
+                outcomes.append(self.minmax(state, "min", 3 - player, 3, player, -float('inf'), float('inf')))
+                moves.append(moveIndex)
 
         print(outcomes)
         return np.argmax(outcomes)
 
 
-    def minmax(self, cellstate, type, player, depth, origplayer):
+    def minmax(self, cellstate, type, player, depth, origplayer, alpha=None, beta=None):
         """
         type is "min" or "max"
         :param cellstate:
@@ -66,29 +61,30 @@ class opponent(object):
         """
 
         if depth == 0:
-            # We've reached max depht
             return self.defaultheuristic(origplayer, cellstate)
 
-        possibleMovedStates = [self._game._testMove(c, np.copy(cellstate), player) for c in range(self._game._columnCounts)]
         outcomes = []
 
-        for (won, state, invalid) in possibleMovedStates:
+        for c in range(self._game._columnCounts):
 
-            if invalid:
-                # If the move is invalid, what do we do?? lets make it infinitely bad
-                outcomes.append(-float('inf'))
-            # elif won:
-            #     print("oops")
-            #     # in this case we want to guarantee it is picked, since we've def. won the game :)
-            #     outcomes.append(float('inf'))
-            else:
-                # Send this off to minimax if it's neither
-                outcomes.append(self.minmax(state, ("max" if type == "min" else "min"), 3 - player, depth - 1, origplayer))
+            (won, state, invalid) = self._game._testMove(c, np.copy(cellstate), player)
 
-       # print("taking " + type + " of")
-        #print(outcomes)
+            if not invalid:
+                if alpha and beta:
+                    result = self.minmax(state, ("max" if type == "min" else "min"), 3 - player, depth - 1, origplayer, alpha, beta)
+                    if type == "max":
+                        if result >= beta:
+                            return result
+                        alpha = max(alpha, result)
+                    elif type == "min":
+                        if result <= alpha:
+                            return result
+                        beta = min(beta, result)
+                else:
+                    result = self.minmax(state, ("max" if type == "min" else "min"), 3 - player, depth - 1, origplayer)
+                outcomes.append(result)
+
         if type == "max":
             return max(outcomes)
         elif type == "min":
-            #print(outcomes)
             return min(outcomes)
